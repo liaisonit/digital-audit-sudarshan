@@ -1,230 +1,351 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sudarshan Furnishings - AI Strategy QA</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { font-family: 'Montserrat', sans-serif; font-weight: 300; }
-    .thin-text { font-weight: 300; }
-    .extra-thin-text { font-weight: 200; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Strategy Proposal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes rotate {
+            100% {
+                transform: rotate(1turn);
+            }
+        }
 
-    .search-wrapper {
-      position: relative;
-      padding: 2px;
-      border-radius: 12px;
-      overflow: hidden;
-      width: 100%;
-    }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+        }
 
-    .search-wrapper::before {
-      content: '';
-      position: absolute;
-      z-index: -1;
-      left: -50%;
-      top: -50%;
-      width: 200%;
-      height: 200%;
-      background: conic-gradient(#89ff00,#a178ff,#00aeff,#ff71cd,#89ff00);
-      animation: rotate 4s linear infinite;
-    }
+        .thin-text {
+            font-weight: 300;
+        }
+        
+        .extra-thin-text {
+            font-weight: 200;
+        }
 
-    @keyframes rotate { 100% { transform: rotate(1turn); } }
+        /* The container for the search bar that has the animated border */
+        .search-wrapper {
+            position: relative;
+            /* z-index removed to simplify stacking context */
+            padding: 2px; /* This padding will be the border thickness */
+            border-radius: 12px;
+            overflow: hidden;
+            width: 100%;
+        }
 
-    #question-input::placeholder {
-      color: #9ca3af;
-      font-weight: 300;
-    }
+        .search-wrapper::before {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            left: -50%;
+            top: -50%;
+            width: 200%;
+            height: 200%;
+            background-repeat: no-repeat;
+            background: conic-gradient(
+                #89ff00,
+                #a178ff,
+                #00aeff,
+                #ff71cd,
+                #89ff00
+            );
+            animation: rotate 4s linear infinite;
+        }
+        
+        #question-form {
+            background: #f9fafb; /* bg-gray-50 */
+            border-radius: 10px; /* (wrapper radius - padding) */
+        }
 
-    #answer-container {
-      font-size: 0.8rem;
-      line-height: 2;
-      font-weight: 300;
-      text-align: left;
-    }
+        #question-input::placeholder {
+            color: #9ca3af; /* text-gray-400 */
+            font-weight: 300;
+        }
 
-    #answer-container p { margin-bottom: 1.5em; }
-    #answer-container strong { font-weight: 500; }
-    #answer-container ul {
-      list-style-position: inside;
-      padding-left: 1rem;
-      margin: 1.5em 0;
-    }
-    #answer-container li { margin-bottom: 0.7em; }
+        #answer-container {
+            font-size: 0.8rem;      /* Adjusted font size */
+            line-height: 2.0;       /* Increased line-height */
+            font-weight: 300;       
+            text-align: left;
+        }
 
-    .loader {
-      width: 48px; height: 48px;
-      border: 3px solid #374151;
-      border-bottom-color: transparent;
-      border-radius: 50%;
-      display: inline-block;
-      animation: rotation 1s linear infinite;
-    }
+        #answer-container p {
+             margin-bottom: 1.5em; /* Added space between paragraphs */
+        }
 
-    @keyframes rotation {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+        #answer-container strong {
+            font-weight: 500; /* Bolder emphasis */
+        }
+        
+        #answer-container ul {
+            list-style-position: inside;
+            padding-left: 1rem;
+            margin: 1.5em 0;
+        }
 
-    .view {
-      transition: opacity 0.5s ease, transform 0.5s ease;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+        #answer-container li {
+            margin-bottom: 0.7em;
+        }
+        
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #374151; /* border-gray-700 */
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
 
-    .view.hidden {
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(20px);
-    }
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-    .view.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  </style>
+        /* View transition styles */
+        .view {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .view.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+        }
+         .view.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
-<main class="w-full h-screen relative pb-10">
-  <div id="search-view" class="view visible p-4">
-    <div class="w-full max-w-2xl">
-      <div class="text-center mb-8">
-        <h1 class="text-3xl md:text-5xl font-light text-gray-900 mb-2 extra-thin-text">Digital Strategy for Sudarshan Furnishings</h1>
-        <p class="text-gray-500 thin-text">Ask any question about the proposed digital growth plan.</p>
-      </div>
-      <div class="search-wrapper">
-        <form id="question-form" class="flex items-center gap-2 p-1">
-          <input type="text" id="question-input"
-                 class="w-full bg-transparent border-0 rounded-lg py-3 px-4 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-0 text-sm md:text-base"
-                 placeholder="e.g., What is our main digital weakness?">
-          <button type="submit" id="search-button"
-                  class="bg-gray-800 text-white rounded-lg p-3 hover:bg-gray-700 transition-colors duration-300 flex-shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                 class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21"
-                 x2="16.65" y2="16.65"></line></svg>
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
 
-  <div id="answer-view" class="view hidden">
-    <div class="w-full h-full max-w-4xl mx-auto flex flex-col">
-      <div class="flex-shrink-0 pt-8 px-8 bg-gray-50/80 backdrop-blur-sm sticky top-0">
-        <button id="back-button" class="mb-4 flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 thin-text">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-               class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline
-               points="12 19 5 12 12 5"></polyline></svg>
-          Ask another question
-        </button>
-        <h2 id="question-display" class="text-xl font-medium text-left mb-6 text-gray-900"></h2>
-      </div>
-      <div id="response-area" class="flex-grow overflow-y-auto px-8 pb-8">
-        <div id="loader" class="hidden justify-center items-center h-full"><div class="loader"></div></div>
-        <div id="answer-container" class="thin-text text-gray-800"></div>
-        <div id="error-message" class="hidden text-red-500"></div>
-      </div>
-    </div>
-  </div>
-</main>
+    <main class="w-full h-screen relative pb-10">
+        <!-- Search View -->
+        <div id="search-view" class="view visible p-4">
+            <div class="w-full max-w-2xl">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl md:text-5xl font-light text-gray-900 mb-2 extra-thin-text">Digital Strategy for Sudarshan Furnishings</h1>
+                    <p class="text-gray-500 thin-text">Ask any question about the proposed digital growth plan.</p>
+                </div>
+                <div class="search-wrapper">
+                    <form id="question-form" class="flex items-center gap-2 p-1">
+                        <input type="text" id="question-input"
+                            class="w-full bg-transparent border-0 rounded-lg py-3 px-4 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-0 text-sm md:text-base"
+                            placeholder="e.g., What is our main digital weakness?">
+                        <button type="submit" id="search-button" class="bg-gray-800 text-white rounded-lg p-3 hover:bg-gray-700 transition-colors duration-300 flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </button>
+                    </form>
+                </div>
+                <!-- Dropdown container now has a very high z-index to ensure it appears above the footer -->
+                <div class="relative w-full max-w-sm mx-auto mt-8 z-50">
+                    <button id="dropdown-button" class="w-full bg-white border border-gray-200 rounded-lg py-3 px-4 text-gray-500 text-sm flex justify-between items-center hover:border-gray-300 transition-colors">
+                        <span>Ask a strategic question...</span>
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="dropdown-panel" class="hidden absolute w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                        <p class="p-3 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">What should be our first step?</p>
+                        <p class="p-3 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">How do we compare to competitors like Decor Studio?</p>
+                        <p class="p-3 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">What's the most critical action for immediate results?</p>
+                        <p class="p-3 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">How can we leverage our 38-year legacy online?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<footer class="fixed bottom-0 left-0 right-0 p-2 text-center text-xs text-gray-400 bg-gray-50/80 backdrop-blur-sm">
-  ©2025, QA for Sudarshan Furnishings • Crafted with lot of ♥ by AM.
-</footer>
+        <!-- Answer View -->
+        <div id="answer-view" class="view hidden">
+             <div class="w-full h-full max-w-4xl mx-auto flex flex-col">
+                <div class="flex-shrink-0 pt-8 px-8 bg-gray-50/80 backdrop-blur-sm sticky top-0">
+                    <button id="back-button" class="mb-4 flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 thin-text">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                        Ask another question
+                    </button>
+                    <h2 id="question-display" class="text-xl font-medium text-left mb-6 text-gray-900"></h2>
+                </div>
+                <div id="response-area" class="flex-grow overflow-y-auto px-8 pb-8">
+                    <div id="loader" class="hidden justify-center items-center h-full">
+                        <div class="loader"></div>
+                    </div>
+                    <div id="answer-container" class="thin-text text-gray-800"></div>
+                    <div id="error-message" class="hidden text-red-500"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="fixed bottom-0 left-0 right-0 p-2 text-center text-xs text-gray-400 bg-gray-50/80 backdrop-blur-sm">
+        ©2025, QA for Sudarshan Furnishings • Crafted with lot of ♥ by AM.
+    </footer>
 
-<script>
-  const form = document.getElementById('question-form');
-  const input = document.getElementById('question-input');
-  const searchView = document.getElementById('search-view');
-  const answerView = document.getElementById('answer-view');
-  const questionDisplay = document.getElementById('question-display');
-  const answerContainer = document.getElementById('answer-container');
-  const loader = document.getElementById('loader');
-  const errorMessage = document.getElementById('error-message');
-  const backButton = document.getElementById('back-button');
+    <script>
+        // DOM Elements
+        const searchView = document.getElementById('search-view');
+        const answerView = document.getElementById('answer-view');
+        const backButton = document.getElementById('back-button');
+        const form = document.getElementById('question-form');
+        const input = document.getElementById('question-input');
+        const dropdownButton = document.getElementById('dropdown-button');
+        const dropdownPanel = document.getElementById('dropdown-panel');
+        const questionDisplay = document.getElementById('question-display');
+        const answerContainer = document.getElementById('answer-container');
+        const loader = document.getElementById('loader');
+        const errorMessage = document.getElementById('error-message');
 
-  const documentContent = `Digital Strategy Proposal for Sudarshan Furnishings:
-  - Flagship store’s outdated 3.7/5 Justdial rating hurts conversions.
-  - Market is booming: $44.6B in 2024 to $80.6B by 2030.
-  - Lack of website/social presence = zero visibility = lost revenue.
-  - Fix name inconsistency across web directories.
-  - Compete with Decor Studio, Wooden Street via SEO & content.
+        const documentContent = `
+            Digital Strategy Proposal for Sudarshan Furnishings
 
-  Strategic Steps:
-  1. Unify branding, claim Google listings.
-  2. Launch professional site with legacy story.
-  3. Push for Google review improvement (4.2+ is the target).
-  4. Use Instagram + Facebook visual storytelling.`;
+            ## Key Data Points & Analysis ##
+            - **Reputation Deficit:** The flagship store has an outdated Justdial rating of 3.7/5. A rating below 4.0 is a major deterrent for modern consumers, actively driving them to higher-rated competitors.
+            - **Market Opportunity:** The Indian home furnishing market is projected to grow at a 10.4% CAGR, from $44.6B in 2024 to over $80.6B by 2030. This is a massive revenue opportunity currently being missed.
+            - **Primary Issue & Market Position:** A near-total lack of a website or social media makes the brand digitally invisible. This cedes market share to competitors.
+            - **Brand Fragmentation:** Inconsistent naming ("Sudarshan Furnishing" vs "Sudarshan Furnishings") across platforms causes customer confusion and diverts leads.
+            - **Competitive Landscape:**
+                - **Direct Competitors (similar digital state):** Bharat Furnishings, Prime Furnishings, Kejal, Themes.
+                - **Aspirational Competitors (strong digital presence):** Decor Studio, Wooden Street. These companies use modern websites and active social media to dominate the online space.
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const question = input.value.trim();
-    if (!question) return;
-    handleQuestion(question);
-  });
+            ## Strategic Roadmap ##
 
-  function switchView(showAnswer) {
-    if (showAnswer) {
-      searchView.classList.add('hidden'); searchView.classList.remove('visible');
-      answerView.classList.remove('hidden'); answerView.classList.add('visible');
-    } else {
-      answerView.classList.add('hidden'); answerView.classList.remove('visible');
-      searchView.classList.remove('hidden'); searchView.classList.add('visible');
-    }
-  }
+            ### Phase 1: Foundational Infrastructure (First 90 Days) ###
+            - **Action 1: Brand Unification & Directory Cleanup.** This is the critical first step to stop lead diversion and consolidate brand identity.
+            - **Action 2: Develop a Central Digital Hub (Website).** This will be the brand's authoritative cornerstone, essential for building trust that directory listings cannot provide. The 'Our Story' page will be key to leveraging the 38-year legacy.
+            - **Action 3: Optimize Local SEO.** Claiming and optimizing Google Business Profiles is the most effective action to capture high-intent local customers who are actively searching and ready to buy.
 
-  function handleQuestion(question) {
-    questionDisplay.textContent = question;
-    switchView(true);
-    getResponse(question);
-  }
+            ### Phase 2: Content & Community Engagement (Days 90-180) ###
+            - **Action 4: Activate Social Media.** Engage customers on Instagram & Facebook with high-quality visual storytelling.
+            - **Action 5: Reputation Management.** Systematically generate new, positive reviews to push the aggregate rating above the critical 4.0 threshold.
+        `;
+        
+        function switchView(showAnswer) {
+            if (showAnswer) {
+                searchView.classList.remove('visible');
+                searchView.classList.add('hidden');
+                answerView.classList.remove('hidden');
+                answerView.classList.add('visible');
+            } else {
+                answerView.classList.remove('visible');
+                answerView.classList.add('hidden');
+                searchView.classList.remove('hidden');
+                searchView.classList.add('visible');
+            }
+        }
+        
+        async function getGeminiResponse(prompt) {
+            answerContainer.innerHTML = '';
+            errorMessage.classList.add('hidden');
+            loader.style.display = 'flex';
 
-  async function getResponse(question) {
-    answerContainer.innerHTML = '';
-    errorMessage.classList.add('hidden');
-    loader.style.display = 'flex';
+            try {
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                
+                const apiKey = "AIzaSyBHpcJxmzbWcIKpItsrkZImSMrfNCFi8Pw";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
-    const prompt = `
-    You are a top-tier digital strategist. Speak directly, professionally, and with data-backed clarity.
-    Use <p>, <ul>, <li>, and <strong> only. No fluff. No asterisks.
-    BASE KNOWLEDGE: ${documentContent}
-    CLIENT QUESTION: "${question}"
-    `;
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
-    try {
-      const response = await fetch('https://your-backend-domain.com/gemini-proxy', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: prompt }] }]
-        })
-      });
+                if (!response.ok) {
+                    throw new Error(`API request failed: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                let answerText = "Sorry, I couldn't provide a response. Please try again.";
 
-      const data = await response.json();
-      const html = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No answer available.';
-      answerContainer.innerHTML = html;
-    } catch (err) {
-      console.error(err);
-      errorMessage.textContent = 'Something went wrong. Try again.';
-      errorMessage.classList.remove('hidden');
-    } finally {
-      loader.style.display = 'none';
-      input.value = '';
-    }
-  }
+                if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                    answerText = result.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error("Received an empty response from the API.");
+                }
+                
+                answerContainer.innerHTML = answerText;
 
-  backButton.addEventListener('click', () => switchView(false));
-</script>
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = 'An error occurred while processing your request. Please try again.';
+                errorMessage.classList.remove('hidden');
+            } finally {
+                loader.style.display = 'none';
+                input.value = '';
+            }
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const question = input.value.trim();
+            if (!question) return;
+            handleQuestion(question);
+        });
+
+        dropdownButton.addEventListener('click', () => {
+            dropdownPanel.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', (e) => {
+            if (!dropdownButton.contains(e.target) && !dropdownPanel.contains(e.target)) {
+                dropdownPanel.classList.add('hidden');
+            }
+        });
+
+        dropdownPanel.addEventListener('click', (e) => {
+            if (e.target.tagName === 'P') {
+                const question = e.target.innerText.trim();
+                handleQuestion(question);
+                dropdownPanel.classList.add('hidden'); // Close dropdown after selection
+            }
+        });
+
+
+        function handleQuestion(question) {
+             questionDisplay.textContent = question;
+             switchView(true);
+
+             const qaPrompt = `
+                You are an elite, data-driven digital marketing strategist from a Tier-1 agency presenting a growth plan to 'Sudarshan Furnishings'.
+                Your communication style is authoritative, insightful, direct, and professional. 
+                You NEVER use conversational fluff like "Thank you for asking." You get straight to the strategic point.
+                You build an undeniable, evidence-based case for every recommendation by weaving in specific data points from the proposal summary. Explain the 'why' behind the strategy. You can use well-known business cases or analogies from the web to illustrate your points (e.g., "Just as Zomato used reviews to build trust...").
+
+                CRITICAL FORMATTING RULES:
+                1. Your entire response MUST be formatted using HTML.
+                2. You MUST wrap each paragraph in <p> tags to ensure spacing.
+                3. For emphasis and bolding, you MUST use <strong> tags. You are FORBIDDEN from using Markdown asterisks (**).
+                4. For lists, you MUST use HTML <ul> and <li> tags.
+                
+                PROPOSAL SUMMARY (YOUR KNOWLEDGE BASE):
+                ---
+                ${documentContent}
+                ---
+                
+                CLIENT'S QUESTION: "${question}"
+                
+                Answer:
+            `;
+            getGeminiResponse(qaPrompt);
+        }
+
+        backButton.addEventListener('click', () => {
+            switchView(false);
+        });
+
+    </script>
 </body>
 </html>
