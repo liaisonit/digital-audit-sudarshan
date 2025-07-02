@@ -282,6 +282,9 @@
                     throw new Error("Received an empty response from the API.");
                 }
                 
+                // CLIENT-SIDE FAILSAFE: Manually remove any lingering Markdown artifacts.
+                answerText = answerText.replace(/'''html/g, '').replace(/'''/g, '');
+
                 answerContainer.innerHTML = answerText;
 
             } catch (error) {
